@@ -12,7 +12,13 @@ library(dplyr)
 library(tidyverse)
 load("Bunker.RData")
 load("Cathedral.RData")
+load("Mawmluh.RData")
+load("South_Glory.RData")
 load("CAVES.RData")
+
+CAVES$mawmluh_hadcm3$isot[462] = NA
+CAVES$mawmluh_hadcm3$isot[494] = NA
+
 ```
 
 ## Potential Plots Histograms
@@ -28,6 +34,7 @@ hist(Bunker$precip_d18O$precip_d18O, xlim = c(-15,2), ylim = c(0,20),  main = "d
 data_hist_drip <- Bunker$drip_d18O %>% filter(drip_entity_name %in% c("bunker_cave_ts_1", "bunker_cave_ts_2"))
 hist(data_hist_drip$drip_d18O, col = adjustcolor("#70A0CD", alpha.f = 0.5), add = TRUE)
 hist(rep(CAVES$entity242$d18O_dweq,2), col = adjustcolor("#91002B", alpha.f = 0.7), add = TRUE)
+#hist(rep(CAVES$entity242$d18O_dweq_hadcm3,2), col = adjustcolor("#004f00", alpha.f = 0.7), add = TRUE)
 #hist(CAVES$entity242$d18O_SMOW, col = adjustcolor("#004f00", alpha.f = 0.7), add = TRUE)
 legend("topright", legend = c("precip", "drip water", "d18O dweq"), 
        fill = c("white", adjustcolor("#70A0CD", alpha.f = 0.5), adjustcolor("#91002B", alpha.f = 0.7)))
@@ -41,6 +48,49 @@ hist(Cathedral$drip_d18O$drip_d18O, col = adjustcolor("#70A0CD", alpha.f = 0.5),
 
 The range of d18O in dripwater seems to be much smaller than in the precipitation. Fractionation processes? Selective recharge? What makes the drip water so uniform, where the precipitation is so variable?
 
+## Compare simulation output with observations
+```{r}
+#cairo_pdf(file = paste0("SISAL_Monitoring_d18O_histo.pdf"), width = 7, height = 4)
+par(mfrow = c(2,2), mar = c(2, 0, 4, 0), oma = c(1,2,0,0))
+hist(Bunker$precip_d18O$precip_d18O, xlim = c(-15,2), ylim = c(0,20),  main = "d18O at Bunker cave", xlab = "d18O in permil")
+hist(CAVES$bunker_hadcm3$isot[450:500], col = adjustcolor("#91002B", alpha.f = 0.7), add = TRUE)
+legend("topright", legend = c("observation", "simulation"), 
+       fill = c("white", adjustcolor("#91002B", alpha.f = 0.7)))
+#hist(Mawmluh$precip_d18O$precip_d18O, xlim = c(-15,2), ylim = c(0,20),  main = "d18O at Mawmluh cave", xlab = "d18O in permil", yaxt = "n")
+hist(CAVES$mawmluh_hadcm3$isot[450:500], col = adjustcolor("#91002B", alpha.f = 0.7), xlim = c(-15,2), ylim = c(0,20),  main = "d18O at Mawmluh cave", xlab = "d18O in permil", yaxt = "n")
+
+hist(Cathedral$precip_d18O$precip_d18O, xlim = c(-15,2), ylim = c(0,20),  main = "d18O at South Glory cave", xlab = "d18O in permil")
+hist(CAVES$south_glory_hadcm3$isot[450:500], col = adjustcolor("#91002B", alpha.f = 0.7), add = TRUE)
+hist(Cathedral$precip_d18O$precip_d18O, xlim = c(-15,2), ylim = c(0,20),  main = "d18O at Cathedral cave", xlab = "d18O in permil", yaxt = "n")
+hist(CAVES$cathedral_hadcm3$isot[450:500], col = adjustcolor("#91002B", alpha.f = 0.7), add = TRUE)
+
+#hist(Cathedral$precip_d18O$precip_d18O, xlim = c(-15,2), ylim = c(0,20),  main = "d18O at Cathedral cave", xlab = "d18O in permil",
+#     yaxt = "n", ylab = "")
+#data_hist_drip <- Cathedral$drip_d18O %>% filter(drip_entity_name %in% c("cathedral_cave_drip279"))
+#hist(Cathedral$drip_d18O$drip_d18O, col = adjustcolor("#70A0CD", alpha.f = 0.5), add = TRUE)
+#dev.off()
+
+```
+
+
 
 ## Exploring the cave temperatures
 
+```{r}
+#cairo_pdf(file = paste0("SISAL_Monitoring_d18O_histo.pdf"), width = 7, height = 4)
+par(mfrow = c(2,2), mar = c(2, 0, 4, 0), oma = c(1,2,0,0))
+hist(Bunker$cave_t$cave_t, xlim = c(5,30), ylim = c(0,20),  main = "Temp at Bunker cave", xlab = "Temp in °C")
+hist(CAVES$bunker_hadcm3$temp[450:500], col = adjustcolor("#91002B", alpha.f = 0.5), add = TRUE)
+legend("topright", legend = c("observation", "simulation"), 
+       fill = c("white", adjustcolor("#91002B", alpha.f = 0.7)))
+hist(Mawmluh$cave_t$cave_t, xlim = c(5,30), ylim = c(0,20),  main = "Temp at Mawmluh cave", xlab = "Temp in °C", yaxt = "n")
+hist(CAVES$mawmluh_hadcm3$temp[450:500], col = adjustcolor("#91002B", alpha.f = 0.5), add = TRUE)
+
+#hist(South_Glory$cave_t$cave_t, xlim = c(-15,2), ylim = c(0,20),  main = "Temp at South Glory cave", xlab = "Temp in °C")
+hist(CAVES$south_glory_hadcm3$temp[450:500], col = adjustcolor("#91002B", alpha.f = 0.5), xlim = c(12,21), ylim = c(0,20),  main = "Temp at South Glory cave", xlab = "Temp in °C")
+hist(rep(Cathedral$cave_t$cave_t,10), xlim = c(12,21), ylim = c(0,20),  main = "Temp at Cathedral cave", xlab = "Temp in °C", yaxt = "n")
+hist(CAVES$cathedral_hadcm3$temp[450:500], col = adjustcolor("#91002B", alpha.f = 0.5), add = TRUE)
+
+#dev.off()
+
+```
