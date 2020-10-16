@@ -1,0 +1,46 @@
+---
+title: "Monitoring potential plots"
+author: "Janica Bühler"
+date: "15 Oktober 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(plyr)
+library(dplyr)
+library(tidyverse)
+load("Bunker.RData")
+load("Cathedral.RData")
+load("CAVES.RData")
+```
+
+## Potential Plots Histograms
+
+To explore the database, we try different analysis strategies and see, what insights the database can provide us with. 
+
+We first look at the **histograms** of d18O in precipitation and in drip water
+
+```{r d18O histograms, warning=FALSE}
+#cairo_pdf(file = paste0("SISAL_Monitoring_d18O_histo.pdf"), width = 7, height = 4)
+par(mfrow = c(1,2), mar = c(5, 0, 4, 0), oma = c(1,3,0,0))
+hist(Bunker$precip_d18O$precip_d18O, xlim = c(-15,2), ylim = c(0,20),  main = "d18O at Bunker cave", xlab = "d18O in permil")
+data_hist_drip <- Bunker$drip_d18O %>% filter(drip_entity_name %in% c("bunker_cave_ts_1", "bunker_cave_ts_2"))
+hist(data_hist_drip$drip_d18O, col = adjustcolor("#70A0CD", alpha.f = 0.5), add = TRUE)
+hist(rep(CAVES$entity242$d18O_dweq,2), col = adjustcolor("#91002B", alpha.f = 0.7), add = TRUE)
+#hist(CAVES$entity242$d18O_SMOW, col = adjustcolor("#004f00", alpha.f = 0.7), add = TRUE)
+legend("topright", legend = c("precip", "drip water", "d18O dweq"), 
+       fill = c("white", adjustcolor("#70A0CD", alpha.f = 0.5), adjustcolor("#91002B", alpha.f = 0.7)))
+hist(Cathedral$precip_d18O$precip_d18O, xlim = c(-15,2), ylim = c(0,20),  main = "d18O at Cathedral cave", xlab = "d18O in permil",
+     yaxt = "n", ylab = "")
+data_hist_drip <- Cathedral$drip_d18O %>% filter(drip_entity_name %in% c("cathedral_cave_drip279"))
+hist(Cathedral$drip_d18O$drip_d18O, col = adjustcolor("#70A0CD", alpha.f = 0.5), add = TRUE)
+#dev.off()
+
+```
+
+The range of d18O in dripwater seems to be much smaller than in the precipitation. Fractionation processes? Selective recharge? What makes the drip water so uniform, where the precipitation is so variable?
+
+
+## Exploring the cave temperatures
+
